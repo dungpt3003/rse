@@ -21,11 +21,11 @@ function [ wekaData ] = create_weka_data( D )
     end
     
     % disp('Converting Data into WEKA format...');
-    convert2wekaObj = RgStEb.Base.ConvertToWeka('data', featName, X', YNom, true); 
+    convert2wekaObj = com.vu.ConvertToWeka('data', featName, X', YNom, true); 
     wekaData = convert2wekaObj.getInstances();
     wekaData.setClassIndex(wekaData.numAttributes() - 1); 
     
     clear convert2wekaObj;
-    % disp('Converting Completed!');
+%     disp('Converting Completed!');
 
 end

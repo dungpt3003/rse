@@ -24,7 +24,7 @@ function [error_rate, num_selected, test_result] = evaluate_rse(Train, Test,num_
 % Test.setClassIndex(Test.numAttributes() - 1);
 
 % Ensemble Parameters
-CfrName = 'RgStEb.Base.BinaryRSE';     % ensemble class name
+CfrName = 'com.vu.BinaryRSE';     % ensemble class name
 BaseCfr = 'weka.classifiers.trees.J48';     % base clasifier class in weka
 RndSeed = 1;      % random seed used in the ensemble
 UseRndSubSpace = false;    % whether to use random subspace method when generating base classifiers

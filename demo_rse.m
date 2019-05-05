@@ -15,10 +15,10 @@ addpath([mainPath 'data']);
 % For RSE (new code)
 % javaaddpath([mainPath 'jar' filesep 'rse.jar']);
 
-javaaddpath([mainPath 'jar' filesep 'matlab2weka.jar']);
+% javaaddpath([mainPath 'jar' filesep 'matlab2weka.jar']);
 % javaaddpath([mainPath 'jar' filesep 'weka.jar']);
-javaaddpath([mainPath 'jar' filesep 'moa-2017.06.jar']);
-javaaddpath([mainPath 'jar' filesep 'RgStEb.jar']);
+% javaaddpath([mainPath 'jar' filesep 'moa-2017.06.jar']);
+javaaddpath([mainPath 'jar' filesep 'rgsteb.jar']);
 
 niters = 3;
 nfolds = 10;

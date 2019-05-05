@@ -4,6 +4,11 @@ clc;
 
 % Add data paths
 mainPath = [pwd '/'];
+resultPath = [mainPath 'results'];
+if (~exist(resultPath, 'dir'))
+    mkdir(resultPath);
+end
+
 addpath([mainPath 'cv']);
 addpath([mainPath 'data']);
 
@@ -18,16 +23,27 @@ javaaddpath([mainPath 'jar' filesep 'RgStEb.jar']);
 niters = 3;
 nfolds = 10;
 
-fileList = {'abalone'};
+fileList = {'abalone', 'Agrawal', 'AssetNegotiation-F2', 'AssetNegotiation-F3', ...
+    'AssetNegotiation-F4', 'BayesianNetworkGenerator_bridges_version1', 'BNG_zoo', ...
+    'DowJones_dj30-1985-2003', 'electricity-normalized', 'Hyperplane', 'RandomTree', ...
+    'RBF', 'shuttle_full', 'Sine', 'STAGGER', 'Waveform'};
 
 for i = 1 : numel(fileList)
-    dataName = fileList{i};
-    fprintf('%s\n', dataName);
+    datasetName = fileList{i};
+    fprintf('%s\n', datasetName);
     
-    D = load([dataName '.csv']);
+    allOutput = struct(...
+        'err',      OutputWriter([resultPath filesep datasetName '_err.dat'], nfolds * niters), ...
+        'prec',     OutputWriter([resultPath filesep datasetName '_prec.dat'], nfolds * niters), ...
+        'recall',   OutputWriter([resultPath filesep datasetName '_recall.dat'], nfolds * niters), ...
+        'f1',       OutputWriter([resultPath filesep datasetName '_f1.dat'], nfolds * niters)...
+    );
+    
+    D = load([datasetName '.csv']);
+    % D = importdata([datasetName '.dat']);
     % wekaD = create_weka_data(D);
     
-    tempholder = load(['cv_' dataName '.mat']);
+    tempholder = load([datasetName '.mat']);
     cv = tempholder.cv;
     
     labels = D(:, end); % class
@@ -35,7 +51,7 @@ for i = 1 : numel(fileList)
     uniq_labels = unique(labels);
     n_labels = length(uniq_labels);
     allIdx = (1:n0)';
-    
+   
     for loop = 1 : niters
         for j = 1 :  nfolds
             current = (loop - 1) * nfolds + j;
@@ -100,8 +116,15 @@ for i = 1 : numel(fileList)
             end
             df = (realClass ~= predictClass);
             E = sum(df) / l_tests;
-            fprintf('Error rate of one-vs-all in the iteration %d = %f \n', current, sum(df) / l_tests);
+            err = sum(predictClass ~= realClass) / l_tests;
+            confmat = create_confusion_matrix(predictClass, realClass, uniq_labels);
+            [prec, recall, f1] = calculate_prf(confmat);
+            fprintf('Error rate of one-vs-all in the iteration %d = %f %f %f %f \n', current, err, prec, recall, f1);
+            allOutput.err.addData(err);
+            allOutput.prec.addData(prec);
+            allOutput.recall.addData(recall);
+            allOutput.f1.addData(f1);     
         end
-    end
+    end 
 end
 
